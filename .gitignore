@@ -1,3 +1,7 @@
+# Guard-skills (installed locally, not part of the repo)
+.claude/skills/
+skills-lock.json
+
 # Secrets
 .env
 .env.*
