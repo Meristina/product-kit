@@ -156,15 +156,43 @@ def mission_brief(dossier: dict, required_fixes: list) -> str:
 # ---------------------------------------------------------------------------
 
 def parse_verdict(text: str) -> str:
-    """Map the Inspector's free text to a machine verdict. Order matters (VETO first)."""
+    """Map the Inspector's free text to a machine verdict.
+
+    Strategy: prefer an explicit verdict announcement line (OVERALL / VERDICT / FINAL VERDICT)
+    so we don't misfire on references like "resolving the previous VETO..." in later iterations.
+    Fall back to the LAST occurrence of a verdict keyword in the text (the Inspector's conclusion
+    is always at the end, not the top). Order of severity: VETO > PASS_WITH_FIXES > PASS.
+    """
+    import re
     upper = (text or "").upper()
-    if "VETO" in upper:
-        return "VETO"
-    if "PASS WITH FIXES" in upper or "PASS-WITH-FIXES" in upper:
-        return "PASS_WITH_FIXES"
-    if "PASS" in upper:
+
+    # 1. Explicit verdict lines — highest priority
+    _explicit = re.search(
+        r"(?:OVERALL|VERDICT|FINAL\s+VERDICT)\s*[:\-–]\s*(VETO|PASS[\s\-]WITH[\s\-]FIXES|PASS)",
+        upper,
+    )
+    if _explicit:
+        token = _explicit.group(1)
+        if "VETO" in token:
+            return "VETO"
+        if "FIX" in token:
+            return "PASS_WITH_FIXES"
         return "PASS"
-    return "UNCLEAR"
+
+    # 2. Fall back to the LAST occurrence of any verdict keyword
+    last_veto = upper.rfind("VETO")
+    last_pwf = max(upper.rfind("PASS WITH FIXES"), upper.rfind("PASS-WITH-FIXES"))
+    last_pass = upper.rfind("PASS")
+
+    candidates = {k: v for k, v in {"VETO": last_veto, "PWF": last_pwf, "PASS": last_pass}.items() if v >= 0}
+    if not candidates:
+        return "UNCLEAR"
+    winner = max(candidates, key=lambda k: candidates[k])
+    if winner == "VETO":
+        return "VETO"
+    if winner == "PWF":
+        return "PASS_WITH_FIXES"
+    return "PASS"
 
 
 def extract_required_fixes(text: str) -> list:
