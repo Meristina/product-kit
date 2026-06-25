@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "product-kit"
+version = "0.1.0"
+description = "Product-Kit — a generalist, sector-agnostic product-management agent army (OpenAI Agents SDK), portable Claude + OpenAI."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = ["openai-agents"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+gemini = ["google-genai"]
+tavily = ["tavily-python"]
+ddg = ["ddgs"]
+litellm = ["openai-agents[litellm]"]
+
+[project.scripts]
+product = "product_cli.cli:main"
+product-kit-mission = "product_kit.mission:main"
+
+[tool.setuptools.packages.find]
+include = ["product_kit*", "product_cli*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
