@@ -168,11 +168,39 @@ def parse_verdict(text: str) -> str:
 
 
 def extract_required_fixes(text: str) -> list:
-    """Best-effort pull of the required-fix bullet lines from the Inspector output."""
+    """Best-effort pull of the required-fix bullet lines from the Inspector output.
+
+    Captures two patterns:
+      1. Lines that start with FIX / REQUIRED / BLOCK (keyword-prefixed items).
+      2. Bullet lines (- / * / •) immediately following a heading that contains
+         REQUIRED or BLOCK — handles "Required Fixes (Blocking):" section headers
+         whose items are indented bullets on the next lines.
+    """
     fixes = []
-    for line in (text or "").splitlines():
-        s = line.strip().lstrip("-*•").strip()
-        if s and any(s.upper().startswith(p) for p in ("FIX", "REQUIRED", "BLOCK")):
+    lines = (text or "").splitlines()
+    in_fixes_section = False
+    for line in lines:
+        raw = line.strip()
+        s = raw.lstrip("-*•").strip()
+        upper = s.upper()
+        # Detect a section heading like "**Required Fixes (Blocking):**"
+        if any(p in upper for p in ("REQUIRED FIX", "BLOCKING FIX", "MUST FIX", "REQUIRED CHANGE")):
+            in_fixes_section = True
+            continue
+        # Exit section on a blank line or next heading
+        if in_fixes_section:
+            if not raw:
+                in_fixes_section = False
+                continue
+            if raw.startswith("#") or (raw.startswith("**") and raw.endswith("**")):
+                in_fixes_section = False
+                continue
+            # Collect bullets in the section
+            if raw.startswith(("-", "*", "•")) and s:
+                fixes.append(s)
+                continue
+        # Also capture standalone keyword-prefixed lines anywhere in the text
+        if s and any(upper.startswith(p) for p in ("FIX:", "REQUIRED:", "BLOCKING:", "BLOCK:")):
             fixes.append(s)
     return fixes
 
