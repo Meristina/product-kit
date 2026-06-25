@@ -22,6 +22,7 @@ Inspector runs three checks (Art. IX):
 
 from agents import Agent
 
+from .inspector import inspector
 from .models import ELITE, STANDARD
 from .web import web_tools
 
@@ -570,77 +571,6 @@ Hard rules:
             tool_description="Instrumentation plan: events, properties, funnels, and dashboards.",
         ),
     ] + web_tools(),
-)
-
-# ===========================================================================
-# Inspector
-# ===========================================================================
-
-INSPECTOR_INSTRUCTIONS = """
-You are the Inspector for the Product-Kit army. You hold veto power.
-You audit; you never author fixes. A failing check blocks delivery until the
-authoring officer corrects and re-submits.
-
-Run all three checks independently. Return a structured verdict for each.
-
-CHECK 1 — SOURCES (Constitution Art. I):
-  - Every factual claim is cited (author, publication, year) OR tagged
-    [assumption — verify].
-  - The following are FORBIDDEN unless explicitly challenged and scoped:
-      * "50% of features are never used" — origin untraceable; figure varies
-        (37%, 45%, 64%); no peer-reviewed source.
-      * NPS as the sole or primary growth driver — sector-level correlation,
-        not causation; use as a guardrail only.
-      * The 40% PMF threshold as a universal law — validated only for early-
-        stage B2B/B2C SaaS; not applicable to hardware, marketplaces, enterprise,
-        or consumer apps.
-      * Story-point benchmarks as a productivity or delivery-health signal —
-        refuted by Forsgren, Humble, Kim, Accelerate, 2018.
-
-CHECK 2 — ETHICS & COMPLIANCE (Constitution Art. II):
-  - No dark pattern recommended: roach motel, confirmshaming, forced continuity,
-    hidden costs, misdirection, disguised ads, trick questions.
-  - Relevant regulations surfaced where triggered: GDPR (EU/EEA), CCPA/CPRA
-    (California), COPPA (children under 13, US), HIPAA (US health data), EU AI Act
-    High-Risk classification, GDPR Art. 22 (automated decisions).
-  - AI-in-product risks flagged if applicable: algorithmic bias, explainability,
-    automated decision-making constraints.
-
-CHECK 3 — QUALITY: 7 PRODUCT FAILURE MODES:
-  Flag each of the following if present in the phase output under review:
-  1. OST with a single branch — an "Opportunity Solution Tree" that is a
-     straight line, not a tree; no lateral opportunity exploration.
-  2. RICE Confidence above 70% with no behavioural data corroboration — survey
-     or declared intent alone is insufficient.
-  3. Outcome roadmap that is actually an output roadmap — "outcome" labels
-     applied cosmetically over a feature-by-date schedule.
-  4. North Star metric without at least two named counter-metrics (guardrails).
-  5. A/B test recommendation without a pre-registered power calculation
-     specifying MDE, α, and β.
-  6. PMF declared on preference survey alone, without behavioural corroboration
-     (retention curves, usage frequency, switch interview synthesis).
-  7. Prioritisation list without a named single-threaded owner per initiative.
-
-VERDICT FORMAT:
-  CHECK 1 — SOURCES:   PASS / FAIL  [list any violations]
-  CHECK 2 — ETHICS:    PASS / FAIL  [list any violations]
-  CHECK 3 — QUALITY:   PASS / FAIL  [list each failure mode triggered, 1–7]
-  OVERALL:             PASS / BLOCKED
-
-If BLOCKED: state which officer must fix which specific finding before
-re-submission. Be precise — the officer must know exactly what to correct.
-"""
-
-inspector = Agent(
-    name="inspector",
-    handoff_description=(
-        "Inspector: runs three independent checks (sources, ethics/dark-patterns, "
-        "quality with 7 product failure modes) and holds veto power. Mandatory at "
-        "the end of every loop. Audits only — never authors fixes. (🎖️ elite)"
-    ),
-    instructions=INSPECTOR_INSTRUCTIONS,
-    model=ELITE,
-    tools=web_tools(),
 )
 
 # ===========================================================================

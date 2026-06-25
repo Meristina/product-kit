@@ -97,8 +97,8 @@ pip install -e ".[ddg]"      # DuckDuckGo (free, no key)
 
 | Variable | Default (Claude) | Default (OpenAI) | Description |
 |---|---|---|---|
-| `PK_ELITE_MODEL` | `claude-opus-4-8` | `gpt-4.1` | Model for 🎖️ elite soldiers |
-| `PK_STANDARD_MODEL` | `claude-sonnet-4-6` | `gpt-4o-mini` | Model for 🔵 standard soldiers |
+| `PK_ELITE_MODEL` | `gpt-5` | `gpt-5` | Model for 🎖️ elite soldiers |
+| `PK_STANDARD_MODEL` | `gpt-5-mini` | `gpt-5-mini` | Model for 🔵 standard soldiers |
 | `PK_SEARCH` | `ddg` | `openai` | Search backend (`ddg` / `tavily` / `gemini` / `openai`) |
 | `OPENAI_API_KEY` | — | required | OpenAI key (or set via LiteLLM for Claude) |
 

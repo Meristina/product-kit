@@ -30,7 +30,7 @@ if os.getenv("OPENAI_BASE_URL"):
         from agents import set_default_openai_api
 
         set_default_openai_api("chat_completions")
-    except Exception:
+    except (ImportError, AttributeError):
         pass
 
 

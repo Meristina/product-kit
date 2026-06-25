@@ -17,6 +17,8 @@ and non-blocking (default auto_proceed), so there is no NO-GO branch.
 The `agents` SDK is stubbed in tests/conftest.py (shared, installed before any test imports).
 """
 
+import pytest
+
 from product_kit import mission
 
 
@@ -49,12 +51,15 @@ def _checker(sequence):
 
 # ---- pure helpers ------------------------------------------------------------
 
-def test_parse_verdict_priority():
-    assert mission.parse_verdict("all good, PASS but also VETO on X") == "VETO"
-    assert mission.parse_verdict("verdict: PASS WITH FIXES") == "PASS_WITH_FIXES"
-    assert mission.parse_verdict("PASS-WITH-FIXES") == "PASS_WITH_FIXES"
-    assert mission.parse_verdict("PASS") == "PASS"
-    assert mission.parse_verdict("") == "UNCLEAR"
+@pytest.mark.parametrize("text,expected", [
+    ("all good, PASS but also VETO on X", "VETO"),
+    ("verdict: PASS WITH FIXES", "PASS_WITH_FIXES"),
+    ("PASS-WITH-FIXES", "PASS_WITH_FIXES"),
+    ("PASS", "PASS"),
+    ("", "UNCLEAR"),
+])
+def test_parse_verdict_priority(text, expected):
+    assert mission.parse_verdict(text) == expected
 
 
 def test_required_fixes_extracted_by_prefix():
