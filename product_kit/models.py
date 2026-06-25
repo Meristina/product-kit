@@ -1,12 +1,12 @@
 """Product-Kit — grade → model mapping (provider-agnostic, env-configurable).
 
 Defaults keep OpenAI (non-breaking):
-  PK_ELITE_MODEL     elite tier  (🎖️)  default: "gpt-5"
-  PK_STANDARD_MODEL  standard    (🔵)  default: "gpt-5-mini"
+  PK_ELITE_MODEL     elite tier  (🎖️)  default: "gpt-5.5"
+  PK_STANDARD_MODEL  standard    (🔵)  default: "gpt-5.4-mini"
 
 Non-OpenAI providers via the LiteLLM extra (`pip install "openai-agents[litellm]"`):
-  export PK_ELITE_MODEL="litellm/anthropic/claude-opus-4-20250514"
-  export PK_STANDARD_MODEL="litellm/anthropic/claude-3-5-sonnet-20241022"
+  export PK_ELITE_MODEL="litellm/anthropic/claude-opus-4-8"
+  export PK_STANDARD_MODEL="litellm/anthropic/claude-sonnet-4-6"
 
 The grade of each unit is fixed in its definition; only the concrete model is configurable.
 
@@ -39,5 +39,5 @@ def _load_dotenv() -> None:
 
 _load_dotenv()
 
-ELITE = os.getenv("PK_ELITE_MODEL", "gpt-5")
-STANDARD = os.getenv("PK_STANDARD_MODEL", "gpt-5-mini")
+ELITE = os.getenv("PK_ELITE_MODEL", "gpt-5.5")
+STANDARD = os.getenv("PK_STANDARD_MODEL", "gpt-5.4-mini")

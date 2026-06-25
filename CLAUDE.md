@@ -53,8 +53,8 @@ product check             # verify installation
 ## Environment variables
 
 ```bash
-PK_ELITE_MODEL=gpt-5           # commander, elite soldiers
-PK_STANDARD_MODEL=gpt-5-mini   # standard soldiers
+PK_ELITE_MODEL=gpt-5.5         # commander, elite soldiers
+PK_STANDARD_MODEL=gpt-5.4-mini # standard soldiers
 PK_SEARCH=ddg                  # search backend: ddg | tavily | gemini | openai
 OPENAI_API_KEY=...
 ```
